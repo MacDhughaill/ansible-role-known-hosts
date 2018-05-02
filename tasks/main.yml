@@ -1,0 +1,25 @@
+---
+# Consult defaults/main.yml to learn about the role variables.
+- include_vars: "{{ item }}"
+  with_first_found:
+    - "known_hosts_{{ ansible_distribution }}_vars.yml"
+    - "known_hosts_{{ ansible_os_family }}_vars.yml"
+
+- include_tasks: "{{ item }}"
+  with_first_found:
+    - "known_hosts_{{ansible_distribution }}_tasks.yml"
+    - "known_hosts_{{ansible_os_family }}_tasks.yml"
+
+- name: Scan and save public keys from selected hosts
+  command: "ssh-keyscan -t {{ known_hosts_key_encrypt_algorithm | quote }} {{ hostvars[item]['ansible_host'] | quote }}"
+  with_inventory_hostnames:
+    - "{{ known_hosts_selection_pattern }}"
+  register: known_hosts_ssh_keyscan
+  changed_when: false
+
+- name: Add public keys to known_hosts file
+  known_hosts:
+    name: "{{ hostvars[item.item]['ansible_host'] }}"
+    key: "{{ item.stdout }}"
+    state: present
+  loop: "{{ known_hosts_ssh_keyscan.results }}"

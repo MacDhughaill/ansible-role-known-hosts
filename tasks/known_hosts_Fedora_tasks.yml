@@ -1,0 +1,6 @@
+---
+- name: Install necessary packages on Fedora
+  dnf:
+    name: "{{ known_hosts_RedHat_packages }}"
+    state: present
+  become: true
