@@ -1,7 +1,7 @@
 ---
-# ssh-keyscan has an option (-t) to specify which type of encryption algorithm you wish to scan for keys of.
-# The following variable allows you to choose which type. Consult the ssh-keyscan man page for the full selection of types.
-known_hosts_key_encrypt_algorithm: ecdsa
-# Enter here a pattern for selecting hosts as described in Ansible's documentation.
-# https://docs.ansible.com/ansible/latest/user_guide/intro_patterns.html
-known_hosts_selection_pattern:
+known_hosts_path: "{{ ansible_user_dir }}/.ssh/known_hosts"
+#known_hosts_public_keys:
+#  - name:
+#    key:
+# Keys have to be manually prepared to conform to the following format:
+# <name1>,<name2>,<name3> <keytype> <key>
